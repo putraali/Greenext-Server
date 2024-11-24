@@ -12,7 +12,7 @@ const getCourse = async (req, res) => {
     console.error("Error Fetching Courses", error.message);
     res
       .status(500)
-      .json({ success: false, data: result, error: "Internal Server Error" });
+      .json({ success: false, error: "Internal Server Error", data: [] });
   }
 
   // db.query(query, (err, result) => {
