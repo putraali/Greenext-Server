@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use(express.json());
-app.use("/api/v1/course", course);
 app.use("/api/v1/auth", auth);
+app.use("/api/v1/course", course);
 
 app.all("*", (req, res) => {
   res.status(404).json({ success: false, message: "Request not found" });
