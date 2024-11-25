@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 
+app.use(express.json());
 app.use("/api/v1/course", course);
 // app.get("/", (req, res) => {
 //   const query = "SELECT * FROM course";
