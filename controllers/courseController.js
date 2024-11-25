@@ -1,7 +1,4 @@
-const express = require("express");
 const db = require("../config/db");
-
-const app = express();
 
 const getCourses = async (req, res) => {
   try {

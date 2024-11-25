@@ -2,13 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getCourse,
+  getCourses,
   addCourse,
   updateCourse,
   getCourseById,
   deleteCourse,
-  getCourses,
-} = require("../controllers/course");
+} = require("../controllers/courseController");
 
 router.get("/", getCourses);
 router.post("/", addCourse);
