@@ -2,6 +2,7 @@ const dotenv = require("dotenv").config();
 
 const express = require("express");
 const course = require("./routes/course");
+const auth = require("./routes/auth");
 
 const PORT = process.env.PORT || 5000;
 
@@ -9,6 +10,11 @@ const app = express();
 
 app.use(express.json());
 app.use("/api/v1/course", course);
+app.use("/api/v1/auth", auth);
+
+app.all("*", (req, res) => {
+  res.status(404).json({ success: false, message: "Request not found" });
+});
 // app.get("/", (req, res) => {
 //   const query = "SELECT * FROM course";
 
