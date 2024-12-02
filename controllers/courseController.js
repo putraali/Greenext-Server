@@ -1,10 +1,41 @@
 const db = require("../config/db");
 
+const searchCourse = async (req, res) => {
+  const { search } = req.query; //  GET /api/v1/course?search=pengenalan get api/v1/course?search=teknik+pertanian+tradisional
+
+  try {
+    let query = `SELECT * FROM course`;
+    const values = [];
+    if (search) {
+      query += ` WHERE name LIKE ? OR description LIKE ?`;
+      values.push(`%${search}%`, `%${search}%`);
+    }
+
+    const [result] = await db.query(query, values);
+
+    // course not found
+    if (result.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No course found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, data: result, message: "Course found!" });
+  } catch (error) {
+    console.error("Error search query", error.message);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 const getCourses = async (req, res) => {
   try {
     const query = "SELECT * FROM course";
     const result = await db.query(query);
-    res.status(200).json({ success: true, data: result[0] });
+    res
+      .status(200)
+      .json({ success: true, data: result[0], message: "Get course success" });
   } catch (error) {
     console.error("Error Fetching Courses", error.message);
     res
@@ -211,6 +242,7 @@ const deleteCourse = async (req, res) => {
 };
 
 module.exports = {
+  searchCourse,
   getCourses,
   addCourse,
   updateCourse,
