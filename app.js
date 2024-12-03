@@ -1,18 +1,24 @@
 const dotenv = require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
+
 const course = require("./routes/course");
 const auth = require("./routes/auth");
 const user = require("./routes/user");
+const techCatalog = require("./routes/techCatalog");
 
 const PORT = process.env.PORT || 5000;
 
 const app = express();
 
 app.use(express.json());
+app.use(cors({ origin: "http://localhost:5173", credentials: true })); // allow frontend origin
+
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/user", user);
 app.use("/api/v1/course", course);
+app.use("/api/v1/tech-catalog", techCatalog);
 
 app.all("*", (req, res) => {
   res.status(404).json({ success: false, message: "Request not found" });

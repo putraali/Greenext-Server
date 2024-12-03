@@ -238,7 +238,10 @@ const deleteCourse = async (req, res) => {
       message: `Course succesfully deleted`,
       courseId: result.insertId,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error deleting course", error.message);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 };
 
 module.exports = {
