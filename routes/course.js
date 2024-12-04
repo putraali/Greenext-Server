@@ -2,16 +2,15 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getCourses,
+  getOrSearchCourse,
   addCourse,
   updateCourse,
   getCourseById,
   deleteCourse,
-  searchCourse,
 } = require("../controllers/courseController");
 
-router.get("/", searchCourse);
-router.get("/", getCourses);
+// router.get("/", searchCourse); // http://localhost:5000/api/v1/course/ GET
+router.get("/", getOrSearchCourse); // http://localhost:5000/api/v1/course/ GET
 router.post("/", addCourse);
 router.put("/:id", updateCourse);
 router.get("/:id", getCourseById);

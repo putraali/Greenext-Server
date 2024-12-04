@@ -12,6 +12,8 @@ const registerUser = async (req, res) => {
     updated_at,
   } = req.body;
 
+  // console.log("Request Body:", req.body);
+
   // basic validation
   if (!username || !email || !password) {
     return res
@@ -42,7 +44,7 @@ const registerUser = async (req, res) => {
       hashedPassword,
       role,
     ]);
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: "User successfully registered",
       userId: result.insertId,

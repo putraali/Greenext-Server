@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-const searchCourse = async (req, res) => {
+const getOrSearchCourse = async (req, res) => {
   const { search } = req.query; //  GET /api/v1/course?search=pengenalan get api/v1/course?search=teknik+pertanian+tradisional
 
   try {
@@ -20,36 +20,38 @@ const searchCourse = async (req, res) => {
         .json({ success: false, message: "No course found" });
     }
 
-    res
-      .status(200)
-      .json({ success: true, data: result, message: "Course found!" });
+    res.status(200).json({
+      success: true,
+      data: result,
+      message: search ? "Course found!" : "Get Course success",
+    });
   } catch (error) {
     console.error("Error search query", error.message);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
-const getCourses = async (req, res) => {
-  try {
-    const query = "SELECT * FROM course";
-    const result = await db.query(query);
-    res
-      .status(200)
-      .json({ success: true, data: result[0], message: "Get course success" });
-  } catch (error) {
-    console.error("Error Fetching Courses", error.message);
-    res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error", data: [] });
-  }
+// const getCourses = async (req, res) => {
+//   try {
+//     const query = "SELECT * FROM course";
+//     const result = await db.query(query);
+//     res
+//       .status(200)
+//       .json({ success: true, data: result[0], message: "Get course success" });
+//   } catch (error) {
+//     console.error("Error Fetching Courses", error.message);
+//     res
+//       .status(500)
+//       .json({ success: false, error: "Internal Server Error", data: [] });
+//   }
 
-  // db.query(query, (err, result) => {
-  //   if (err) {
-  //     console.log("Error executing the query", err);
-  //     return res.status(500).send("Database query failed.");
-  //   }
-  // });
-};
+//   // db.query(query, (err, result) => {
+//   //   if (err) {
+//   //     console.log("Error executing the query", err);
+//   //     return res.status(500).send("Database query failed.");
+//   //   }
+//   // });
+// };
 
 const addCourse = async (req, res) => {
   const {
@@ -245,8 +247,7 @@ const deleteCourse = async (req, res) => {
 };
 
 module.exports = {
-  searchCourse,
-  getCourses,
+  getOrSearchCourse,
   addCourse,
   updateCourse,
   getCourseById,
