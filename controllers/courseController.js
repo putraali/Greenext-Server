@@ -54,32 +54,19 @@ const getOrSearchCourse = async (req, res) => {
 // };
 
 const addCourse = async (req, res) => {
-  const {
-    name,
-    description,
-    difficulty,
-    status,
-    price,
-    total_hours,
-    created_by,
-    updated_by,
-  } = req.body;
+  const { name, description, difficulty, status, price, total_hours } =
+    req.body;
 
   // validation
-  if (
-    !name ||
-    !description ||
-    !price ||
-    !created_by ||
-    !difficulty ||
-    !total_hours ||
-    !status
-  ) {
+  if (!name || !description || !price) {
     return res
       .status(400)
       .json({ success: false, message: "Missing required fields" });
   }
   try {
+    const createdBy = req.user.id; // use the user id from the token
+    const updatedBy = req.user.id;
+
     const query = `INSERT INTO course (name, description, difficulty, status, price, total_hours, created_by, created_at, updated_by, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW())`;
     const result = await db.query(query, [
@@ -89,13 +76,14 @@ const addCourse = async (req, res) => {
       status || "active",
       price,
       total_hours || 0,
-      created_by,
-      updated_by,
+      createdBy,
+      updatedBy,
     ]);
     res.status(201).json({
       success: true,
       message: "Course added succesfully!",
       course_id: result.insertId,
+      user: req.user, // include user info in the response
     });
   } catch (error) {
     console.error("Error Adding Course", error.message);

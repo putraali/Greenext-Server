@@ -87,10 +87,26 @@ const loginUser = async (req, res) => {
 
     // generate jwt token
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        createdAt: user.created_at,
+        updatedAt: user.updated_at,
+      },
       "your_jwt_secret",
       { expiresIn: "1h" }
     );
+
+    // set token in an HTTP-Only Cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 3600000,
+    });
+
     res.status(200).json({ success: true, message: "Login Successful", token });
   } catch (error) {
     console.error("Error Logging in user", error.message);
@@ -98,7 +114,31 @@ const loginUser = async (req, res) => {
   }
 };
 
+const authenticateToken = (req, res, next) => {
+  const token = req.cookies?.token; // retrieve token from cookie using optional chaining
+
+  console.log("Cookies:", req.cookies);
+  console.log("Headers:", req.headers);
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Access Denied : No Token Provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, "your_jwt_secret"); // veriy token
+    req.user = decoded; // attach user info to request
+    console.log("User : ", req.user);
+    next();
+  } catch (error) {
+    console.error("Invalid Token", error.message);
+    res.status(403).json({ success: false, message: "Invalid Token" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  authenticateToken,
 };

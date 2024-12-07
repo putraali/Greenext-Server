@@ -2,6 +2,7 @@ const dotenv = require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const course = require("./routes/course");
 const auth = require("./routes/auth");
@@ -14,6 +15,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173", credentials: true })); // allow frontend origin
+app.use(cookieParser()); // enable cookie parser
 
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/user", user);
