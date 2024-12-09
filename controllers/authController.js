@@ -102,22 +102,33 @@ const loginUser = async (req, res) => {
     // set token in an HTTP-Only Cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
       maxAge: 3600000,
     });
+    console.log("Response headers:", res.getHeaders());
 
-    res.status(200).json({ success: true, message: "Login Successful", token });
+    console.log("Set-Cookie Header:", res.getHeaders()["set-cookie"]);
+
+    res.status(200).json({
+      success: true,
+      message: "Login Successful",
+      token,
+      // user: req.user,
+    });
   } catch (error) {
     console.error("Error Logging in user", error.message);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
+// middleware authenthicate token
 const authenticateToken = (req, res, next) => {
   const token = req.cookies?.token; // retrieve token from cookie using optional chaining
+  console.log("Token from Cookies:", token);
 
-  console.log("Cookies:", req.cookies);
+  console.log("All Cookies:", req.cookies);
+  console.log("Token:", req.cookies?.token);
   console.log("Headers:", req.headers);
 
   if (!token) {

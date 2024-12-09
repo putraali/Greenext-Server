@@ -93,16 +93,8 @@ const addCourse = async (req, res) => {
 
 const updateCourse = async (req, res) => {
   const { id } = req.params;
-  const {
-    name,
-    description,
-    difficulty,
-    status,
-    price,
-    total_hours,
-    created_by,
-    updated_by,
-  } = req.body;
+  const { name, description, difficulty, status, price, total_hours } =
+    req.body;
 
   // check the id of targeted course
   if (!id) {
@@ -111,6 +103,8 @@ const updateCourse = async (req, res) => {
       .json({ success: false, message: "Course ID Not Found" });
   }
 
+  const updatedBy = req.user.id;
+
   // make sure all fields not empty
   if (
     !name &&
@@ -118,9 +112,9 @@ const updateCourse = async (req, res) => {
     !difficulty &&
     !status &&
     !price &&
-    !total_hours &&
-    !updated_by &&
-    !created_by
+    !total_hours
+    // !updated_by &&
+    // !created_by
   ) {
     return res
       .status(400)
@@ -159,15 +153,9 @@ const updateCourse = async (req, res) => {
       fields.push("total_hours = ?");
       values.push(total_hours);
     }
-    if (created_by) {
-      fields.push("created_by = ?");
-      values.push(created_by);
-    }
-    if (updated_by) {
-      fields.push("updated_by = ?");
-      values.push(updated_by);
-    }
 
+    fields.push("updated_by = ?");
+    values.push(updatedBy);
     fields.push("updated_at = NOW()"); // update the updated_at fields in database
 
     query += fields.join(", ") + `WHERE id = ?`;
